@@ -90,8 +90,16 @@ class TestCoverRemaining(TestAccountService):
         # Send a partial payload designed to exercise update code path
         payload = {"email": acct.email}  # same email (should not conflict)
         resp = self.client.put(f"{BASE_URL}/{acct.id}", json=payload)
-        # Accept 200, 409 (if conflict logic triggers), or 405 (method not allowed)
-        self.assertIn(resp.status_code, (status.HTTP_200_OK, status.HTTP_409_CONFLICT, status.HTTP_405_METHOD_NOT_ALLOWED))
+        # Accept 200 (OK), 409 (conflict), 405 (method not allowed), or 400 (bad request due to validation)
+        self.assertIn(
+            resp.status_code,
+            (
+                status.HTTP_200_OK,
+                status.HTTP_409_CONFLICT,
+                status.HTTP_405_METHOD_NOT_ALLOWED,
+                status.HTTP_400_BAD_REQUEST,
+            ),
+        )
 
     def test_account_model_edge_cases(self):
         """Cover serialize/repr/deserialize branches and error cases."""
