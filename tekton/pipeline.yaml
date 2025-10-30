@@ -1,5 +1,5 @@
 #
-# cd-pipeline : clone, lint, tests, build, deploy
+# Tekton Pipeline for CD
 #
 ---
 apiVersion: tekton.dev/v1beta1
