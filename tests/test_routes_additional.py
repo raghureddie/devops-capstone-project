@@ -2,6 +2,7 @@
 from service.common import status
 from tests.test_routes import TestAccountService, BASE_URL
 
+
 class TestRoutesAdditional(TestAccountService):
     """Small tests to exercise specific route branches not covered yet."""
 
@@ -21,7 +22,7 @@ class TestRoutesAdditional(TestAccountService):
         a1, a2 = accounts[0], accounts[1]
         payload = {"email": a2.email}
         resp = self.client.put(f"{BASE_URL}/{a1.id}", json=payload)
-         # Accept 409 (conflict), 200 (updated), 405 (method not allowed), or 400 (bad request/validation)
+        # Accept 409 (conflict), 200 (updated), 405 (method not allowed), or 400 (bad request/validation)
         self.assertIn(
             resp.status_code,
             (
@@ -31,10 +32,9 @@ class TestRoutesAdditional(TestAccountService):
                 status.HTTP_400_BAD_REQUEST,
             ),
         )
-    
+
     def test_delete_nonexistent_returns_204(self):
         """Deleting a non-existent account should return 204 (do nothing)."""
         resp = self.client.delete(f"{BASE_URL}/99999")
         # lab hints: if not found, return 204
         self.assertIn(resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED))
-
