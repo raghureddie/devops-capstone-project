@@ -1,0 +1,25 @@
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/accounts-845886bdb8-lggvt   1/1     Running   0          158m
+pod/accounts-845886bdb8-qjgrj   1/1     Running   0          159m
+pod/accounts-845886bdb8-s2wdd   1/1     Running   0          99m
+
+NAME               TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/accounts   NodePort   172.21.195.46   <none>        8080:31922/TCP   19h
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/accounts   3/3     3            3           19h
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/accounts-548f64f67b   0         0         0       19h
+replicaset.apps/accounts-5c79b48584   0         0         0       18h
+replicaset.apps/accounts-5c8d668488   0         0         0       18h
+replicaset.apps/accounts-5fb7c8547c   0         0         0       3h14m
+replicaset.apps/accounts-65977594fd   0         0         0       18h
+replicaset.apps/accounts-696ff44b9d   0         0         0       165m
+replicaset.apps/accounts-76df94449f   0         0         0       18h
+replicaset.apps/accounts-845886bdb8   3         3         3       159m
+replicaset.apps/accounts-987ff7c      0         0         0       18h
+replicaset.apps/accounts-bf5797b74    0         0         0       18h
+
+NAME                                HOST/PORT                                                                                                                        PATH   SERVICES   PORT   TERMINATION   WILDCARD
+route.route.openshift.io/accounts   accounts-sn-labs-reddyraghavm.labs-prod-openshift-san-a45631dc5778dc6371c67d206ba9ae5c-0000.us-east.containers.appdomain.cloud          accounts   http   edge          None
