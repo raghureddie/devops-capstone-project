@@ -37,4 +37,6 @@ class TestRoutesAdditional(TestAccountService):
         """Deleting a non-existent account should return 204 (do nothing)."""
         resp = self.client.delete(f"{BASE_URL}/99999")
         # lab hints: if not found, return 204
-        self.assertIn(resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED))
+        self.assertIn(
+            resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED)
+        )

@@ -11,9 +11,12 @@ spec:
     - name: pipeline-workspace
   params:
     - name: repo-url
+      description: Git repository URL to clone
     - name: branch
+      description: Branch to checkout and build
       default: main
     - name: build-image
+      description: Full target image name for the build step (registry/namespace/name:tag)
   tasks:
     - name: init
       workspaces:
@@ -89,10 +92,12 @@ spec:
         - name: SCRIPT
           value: |
             echo "Updating manifest..."
-            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
-            cat deploy/deployment.yaml
+            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml || true
+            echo "Resulting manifest:"
+            cat deploy/deployment.yaml || true
             echo "Deploying to OpenShift..."
             oc apply -f deploy/
+            echo "Pods for app=accounts:"
             oc get pods -l app=accounts
       runAfter:
         - build

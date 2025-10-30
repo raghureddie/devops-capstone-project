@@ -81,7 +81,10 @@ class TestCoverRemaining(TestAccountService):
     def test_delete_nonexistent_or_method_not_allowed(self):
         """Hit the delete endpoint for a non-existent account; accept 204 or 405."""
         resp = self.client.delete(f"{BASE_URL}/999999")
-        self.assertIn(resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED))
+        self.assertIn(
+            resp.status_code,
+            (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED),
+        )
 
     def test_partial_update_path(self):
         """Call PUT with a small payload to exercise update branches (deserialize/update fallback)."""

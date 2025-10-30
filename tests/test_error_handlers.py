@@ -47,7 +47,10 @@ class TestErrorHandlers(TestAccountService):
         # Use the create endpoint but send wrong content-type to trigger check_content_type -> abort(415)
         resp = self.client.post(BASE_URL, data="notjson", content_type="text/plain")
         # The app may respond with 415 or with a 400 from other validation; accept 415 specifically if present.
-        self.assertIn(resp.status_code, (status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, status.HTTP_400_BAD_REQUEST))
+        self.assertIn(
+            resp.status_code,
+            (status.HTTP_415_UNSUPPORTED_MEDIA_TYPE, status.HTTP_400_BAD_REQUEST),
+        )
 
         if resp.status_code == status.HTTP_415_UNSUPPORTED_MEDIA_TYPE:
             body = resp.get_json()
