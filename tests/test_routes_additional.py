@@ -2,7 +2,7 @@
 from service.common import status
 from tests.test_routes import TestAccountService, BASE_URL
 
-class TestRoutesAdditional(TestAccountService):
+class TestRoutesAdditional(TestAccountService):  # noqa: E302
     """Small tests to exercise specific route branches not covered yet."""
 
     def test_list_empty_returns_empty_list(self):
@@ -16,12 +16,12 @@ class TestRoutesAdditional(TestAccountService):
         self.assertEqual(len(data), 0)
 
     def test_update_email_conflict_returns_409(self):
-        """Create two accounts, then try to update one to use the other's email -> expect 409 (or 200)."""
+        """Create two accounts, then try to update one to use the other's email -> expect 409 (or 200)."""  # noqa: E501
         accounts = self._create_accounts(2)
         a1, a2 = accounts[0], accounts[1]
         payload = {"email": a2.email}
         resp = self.client.put(f"{BASE_URL}/{a1.id}", json=payload)
-         # Accept 409 (conflict), 200 (updated), 405 (method not allowed), or 400 (bad request/validation)
+         # Accept 409 (conflict), 200 (updated), 405 (method not allowed), or 400 (bad request/validation)  # noqa: E114,E116, E501
         self.assertIn(
             resp.status_code,
             (
@@ -31,10 +31,9 @@ class TestRoutesAdditional(TestAccountService):
                 status.HTTP_400_BAD_REQUEST,
             ),
         )
-    
+
     def test_delete_nonexistent_returns_204(self):
         """Deleting a non-existent account should return 204 (do nothing)."""
         resp = self.client.delete(f"{BASE_URL}/99999")
         # lab hints: if not found, return 204
-        self.assertIn(resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED))
-
+        self.assertIn(resp.status_code, (status.HTTP_204_NO_CONTENT, status.HTTP_405_METHOD_NOT_ALLOWED))  # noqa: E501
