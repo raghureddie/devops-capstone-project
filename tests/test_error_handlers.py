@@ -34,7 +34,9 @@ class TestErrorHandlers(TestAccountService):
         """Illegal method on a valid endpoint should hit 405 handler (Method not Allowed)"""
         # DELETE on /accounts should be 405 (or 404 depending on routing). Accept both but prefer 405.
         resp = self.client.delete(BASE_URL)
-        self.assertIn(resp.status_code, (status.HTTP_405_METHOD_NOT_ALLOWED, status.HTTP_404_NOT_FOUND))
+        self.assertIn(
+            resp.status_code, (status.HTTP_405_METHOD_NOT_ALLOWED, status.HTTP_404_NOT_FOUND)
+        )
         if resp.status_code == status.HTTP_405_METHOD_NOT_ALLOWED:
             body = resp.get_json()
             self.assertEqual(body.get("status"), status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -82,4 +84,3 @@ class TestErrorHandlers(TestAccountService):
         else:
             # Generic flask error message is acceptable — just ensure it's non-empty
             self.assertTrue(len(msg) > 0)
-    
