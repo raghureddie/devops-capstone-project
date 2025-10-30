@@ -6,7 +6,7 @@ spec:
   storageClassName: skills-network-learner
   resources:
     requests:
-      storage:  1Gi
+      storage: 1Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteMany
