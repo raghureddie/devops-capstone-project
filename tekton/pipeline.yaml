@@ -1,20 +1,32 @@
 #
-# cd-pipeline : clone, lint, tests, build, deploy
+# Tekton Pipeline: cd-pipeline
+# Requires:
+#   - git-clone (task from Tekton catalog)
+#   - flake8 (task from Tekton catalog)
+#   - buildah (ClusterTask available in cluster)
+#   - openshift-client (ClusterTask available in cluster)
 #
----
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: cd-pipeline
 spec:
+  # shared workspace for the pipeline
   workspaces:
     - name: pipeline-workspace
+
   params:
     - name: repo-url
+      description: "Git repo to clone"
     - name: branch
+      description: "Branch to build"
       default: main
     - name: build-image
+      description: "Image name to build and deploy (registry/path:tag)"
+      default: ""
+
   tasks:
+    # 1. cleanup (init) - remove any files in workspace
     - name: init
       workspaces:
         - name: source
@@ -22,6 +34,7 @@ spec:
       taskRef:
         name: cleanup
 
+    # 2. clone - clone the repo into workspace (uses git-clone task)
     - name: clone
       workspaces:
         - name: output
@@ -36,6 +49,7 @@ spec:
       runAfter:
         - init
 
+    # 3. lint - flake8 (runs after clone)
     - name: lint
       workspaces:
         - name: source
@@ -46,10 +60,15 @@ spec:
         - name: image
           value: "python:3.9-slim"
         - name: args
-          value: ["--count","--max-complexity=10","--max-line-length=127","--statistics"]
+          value:
+            - "--count"
+            - "--max-complexity=10"
+            - "--max-line-length=127"
+            - "--statistics"
       runAfter:
         - clone
 
+    # 4. tests - run nose tests (runs after clone)
     - name: tests
       workspaces:
         - name: source
@@ -64,6 +83,7 @@ spec:
       runAfter:
         - clone
 
+    # 5. build - build image using buildah ClusterTask (runs after lint & tests)
     - name: build
       workspaces:
         - name: source
@@ -75,9 +95,10 @@ spec:
         - name: IMAGE
           value: "$(params.build-image)"
       runAfter:
-        - tests
         - lint
+        - tests
 
+    # 6. deploy - use openshift-client ClusterTask to patch manifest and apply to cluster
     - name: deploy
       workspaces:
         - name: manifest-dir
@@ -90,9 +111,12 @@ spec:
           value: |
             echo "Updating manifest..."
             sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
+            echo "Resulting deployment manifest:"
             cat deploy/deployment.yaml
             echo "Deploying to OpenShift..."
             oc apply -f deploy/
+            echo "Waiting briefly and listing pods..."
+            sleep 3
             oc get pods -l app=accounts
       runAfter:
         - build
